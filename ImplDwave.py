@@ -1,4 +1,4 @@
-import diningPhilosophers as dp
+import DiningPhilosophers as dp
 import matplotlib.pyplot as plt
 import dwavebinarycsp
 from dwave.system.samplers import DWaveSampler
@@ -15,16 +15,21 @@ class ImplDwave(dp.DiningPhilosophers):
     def __init__(self, N, draw=True):
         dp.DiningPhilosophers.__init__(self, N, draw)
 
-    def solve(self):
+    def solve(self, checkDeadloack=True):
         csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
         for i in range(self.N):
             c = self.chopsticks[i]
             next_c = self.chopsticks[(i+1) % self.N]
             vars = [c + '_R', c + '_L'] 
-            #csp.add_constraint(atMost1, vars)
-            csp.add_constraint(exactly1, vars)
+            if checkDeadloack:
+                csp.add_constraint(exactly1, vars)
+            else: csp.add_constraint(atMost1, vars)
+
             phils = [c + '_R', next_c + '_L']
-            csp.add_constraint(exactly1, phils)
+            if checkDeadloack:
+                csp.add_constraint(exactly1, phils)
+            #else: csp.add_constraint(atMost1, phils)
+
         bqm = dwavebinarycsp.stitch(csp)
 
         sampler = EmbeddingComposite(DWaveSampler())
@@ -43,6 +48,3 @@ class ImplDwave(dp.DiningPhilosophers):
             t = -1
 
         return t
-
-s = ImplDwave(5)
-s.solve()

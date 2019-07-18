@@ -1,5 +1,5 @@
 import DiningPhilosophers as dp
-from qiskit import Aer
+from qiskit import Aer, IBMQ
 from qiskit.aqua.components.oracles import logical_expression_oracle
 from qiskit.aqua.algorithms import Grover
 from qiskit.tools.visualization import plot_histogram
@@ -20,7 +20,9 @@ class ImplQiskit(dp.DiningPhilosophers):
             next_c = self.chopsticks[(i+1) % self.N]
             if (i > 0): constraints += ' & '
             constraints += exactly1(c + '_R', c + '_L')
-            
+            constraints += ' & '
+            constraints += exactly1(c + '_R', next_c + '_L')
+
             if i % 2 == 0:
                 index.append(c + '_R')
                 index.append(c + '_L')
@@ -28,12 +30,13 @@ class ImplQiskit(dp.DiningPhilosophers):
                 index.append(c + '_L')
                 index.append(c + '_R')
 
-            constraints += ' & '
-            constraints += exactly1(c + '_R', next_c + '_L')
-
         backend = Aer.get_backend('qasm_simulator')
+        #IBMQ.load_account()
+        #backend = IBMQ.get_backend('ibmq_16_melbourne')
+        print(backend.configuration())
+        
         oracle = logical_expression_oracle.LogicalExpressionOracle(
-                    constraints, mct_mode='advanced', optimization='espresso')
+                    constraints) #, mct_mode='advanced', optimization='espresso')
         algorithm = Grover(oracle)
         result = algorithm.run(backend)
 

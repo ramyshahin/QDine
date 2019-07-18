@@ -13,16 +13,13 @@ class DiningPhilosophers:
         alternating=[]
         sizes=[]
         colors=[]
-        shapes=[]
         for i in range(self.N):
             alternating.append(self.philosophers[i])
             sizes.append(30000/self.N) 
             colors.append('skyblue')
-            shapes.append('o')
             alternating.append(self.chopsticks[i])
             sizes.append(5000/self.N)
-            colors.append('y')
-            shapes.append('o')
+            colors.append('yellow')
 
         G.add_nodes_from(alternating)
         for i in range(self.N):
