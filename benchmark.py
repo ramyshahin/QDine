@@ -4,7 +4,7 @@ import time
 
 Ns = []
 times = []
-for i in range(5,6,5):
+for i in range(5,301,5):
     Ns.append(i)
     p = dp.ImplDwave(i, draw=False)
     t = p.solve()

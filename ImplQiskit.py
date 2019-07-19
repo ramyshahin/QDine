@@ -1,3 +1,4 @@
+# modeled after sample code from https://medium.com/qiskit/qiskit-aqua-a-library-of-quantum-algorithms-and-applications-33ecf3b36008
 import DiningPhilosophers as dp
 from qiskit import Aer, IBMQ
 from qiskit.aqua.components.oracles import logical_expression_oracle

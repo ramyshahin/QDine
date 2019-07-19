@@ -15,6 +15,9 @@ class ImplDwave(dp.DiningPhilosophers):
     def __init__(self, N, draw=True):
         dp.DiningPhilosophers.__init__(self, N, draw)
 
+    def getSampler(self):
+        return EmbeddingComposite(DWaveSampler())
+
     def solve(self, checkDeadloack=True):
         csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
         for i in range(self.N):
@@ -28,11 +31,10 @@ class ImplDwave(dp.DiningPhilosophers):
             phils = [c + '_R', next_c + '_L']
             if checkDeadloack:
                 csp.add_constraint(exactly1, phils)
-            #else: csp.add_constraint(atMost1, phils)
 
         bqm = dwavebinarycsp.stitch(csp)
 
-        sampler = EmbeddingComposite(DWaveSampler())
+        sampler = self.getSampler()
         try:
             start = time.time()
             response = sampler.sample(bqm, num_reads=50)
